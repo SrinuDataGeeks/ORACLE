@@ -1,0 +1,341 @@
+Understanding Relational Databases :-
+**********************************
+The Relational Databases provides following features 
+
+	1. Provides Security to the data.
+	2. Maintains huge amount of data.
+	3. Every relational database has given specific SQL (Structure Query Language) 
+	so that data manupulation becomes very easier.
+	4. Relational Databases provides Distributed Functionalities.
+	5. Relational Databases avoids duplication of data.
+
+	etc..
+	
+
+Ex for Realtional Databases are Oracle,MySql etc..
+
+
+=> In a realtional databases we will maintain the data in the form of tables and column's.
+=> Here the table represents the group of realted data. 
+=> The data can be differenciated using column's.
+
+			Understanding Oracle Database :-	
+			*****************************
+
+
+=> Install Oracle Express Edition. 
+=> Which gives the Default user accounts as "SYSTEM" and "SYS".
+=> We need to set the password for these two accounts at the time of installation.
+=> To be on the same page set the password as "tiger".
+
+Procedure to login into Oracle database :-
+*******************************************
+Go To Run => Type SQL => You can find "Run SQL Command Line" => Click on it.SQL Prompt will be opened.
+
+Type connect keyword within SQL Prompt.
+
+
+SQL> connect
+Enter user-name: system  => Click on Enter
+
+Enter password:  tiger   => Click on Enter (Mention the password while installation)
+
+Once the Username and password are equals then it will be Connected.
+
+
+Procedure 2 :-
+***********
+	Open Command Prompt
+	
+		Type sqlplus
+
+	CMD > sqlplus
+
+	Enter user-name: system  => Click on Enter
+
+	Enter password:  tiger   => Click on Enter (Mention the password while installation)
+
+
+Command : cl scr  It will clear the screen.
+
+*******************************************
+
+Oracle database has given following datatypes to divide the data.
+
+1.number(size) :-  represents short , integer , long ,boolean type of data.'
+
+Ex : number(10) 
+     
+number(1) represents boolean type of data .
+		data 1  => true
+		data 0 => false
+
+
+2. number(size,decimalpoints) :- Represents Float,double type of data.
+
+number(10,3) The '3' indicates how many decimals to be there after the point.
+
+
+3.VARCHAR2(size) :- This is used to accept String,Charecter type of data.
+
+VARCHAR2(10)
+
+VARCHAR2(1) => represents single charecter
+
+*********************************************
+
+Employee
+
+EmpNo,EmpName,EmpSal
+
+Syntax to create a table  :-
+************************
+Create Table <Table_Name>(Column_Name1 <Data_Type> , Column_Name2 <Data_Type> , Column_Name3 <Data_Type> ... );
+
+** Create Table Employee(EmpNo number(10),EmpName varchar2(15),EmpSal number(10,2));
+
+Once the table is created we can know the meta information about the table using 
+
+DESC <Table_Name>   command.
+
+
+** DESC Employee;
+
+
+Syntax to insert Query :-
+*********************
+Syntax 1 :-
+********
+ Insert Into  <Table_Name> Values (columndata1,columndata2,columndata3 ....);
+	
+ Insert Into Employee Values(1242,'Srinu',5000.56);
+ Insert Into Employee Values(1254,'Tirumal',8000.25);
+
+Syntax 2 :-
+********
+	Insert Into  <Table_Name>(Column_Name1 ,Column_Name2 ..) Values (Column_Name1Data,Column_Name2Data ...)
+
+	Insert Into Employee(EmpNo,EmpName,EmpSal) Values (1201,'Venkatesh',3000);
+	
+	Insert Into Employee(EmpNo,EmpName) Values (1260,'Bhavya');
+
+
+After insterting data . Enter "commit" command inorder to maintain data perminently. 
+This is the concept of Transation Management.
+
+SQL > commint ;
+
+
+Syntax for Selecting Of Data :-
+***************************
+=> Selecting all the columns data 
+
+Select * From <Table_Name> ;
+
+Select * From Employee;
+
+SQL> Select * From Employee;
+
+     EMPNO EMPNAME                  EMPSAL
+---------- -------------------- ----------
+      1242 Srinu                    1500.5
+      1204 Akash
+      1240 Venu                     2500.5
+
+
+
+=> Selecting Specific columns data 
+
+Select Column_Name1,Column_Name2 From <Table_Name> ;
+
+Select EmpNo , EmpName From Employee;
+
+SQL> Select EmpName,EmpSal From Employee;
+
+EMPNAME                  EMPSAL
+-------------------- ----------
+Srinu                    1500.5
+Akash
+Venu                     2500.5
+
+Usage where :-
+************
+
+"where" keyword can be used to apply the criteria on selection of data.
+
+Syntax : -
+*******
+
+Select * From <Table_Name> Where <Condition>
+
+=> Select all the Employees whose salary is greater than or equals to 5000.
+
+SQL> Select * From Employee where EmpSal >= 5000;
+
+
+
+Ouput :-
+******
+
+SQL> Select * From Employee;
+
+     EMPNO EMPNAME                  EMPSAL
+---------- -------------------- ----------
+      1242 Srinu                    1500.5
+      1204 Akash
+      1240 Venu                     2500.5
+      1201 Kiran                     25000
+      1202 Ramu                      35000
+      1203 Praneeth                  27000
+
+6 rows selected.
+
+SQL> Select * From Employee Where EmpSal >= 25000;
+
+     EMPNO EMPNAME                  EMPSAL
+---------- -------------------- ----------
+      1201 Kiran                     25000
+      1202 Ramu                      35000
+      1203 Praneeth                  27000
+
+
+
+=> Select Employee data whose Empno is 1201 
+
+
+
+SQL> Select * From Employee Where EmpNo=1201;
+
+     EMPNO EMPNAME                  EMPSAL
+---------- -------------------- ----------
+      1201 Kiran                     25000
+
+
+=> Select Employee data whose name is Srinu.
+
+SQL> Select * From Employee Where EmpName='Srinu';
+
+     EMPNO EMPNAME                  EMPSAL
+---------- -------------------- ----------
+      1242 Srinu                    1500.5
+Update a Data :-
+*************
+Syntax :- 
+*******
+
+Update <TABLE_NAME> SET  COLUMN_NAME1 = COLUMN_NAME1_DATA ,COLUMN_NAME2 = COLUMN_NAME2_DATA  Where <Condition>
+
+=> Update Employees Salarys to 5000 who were having salary as null
+
+
+Update Employee  SET  EmpSal = 5000  Where EmpSal Is Null;
+commit;
+
+=> Update Employees Name AS 'SrinuNp' For Employees having Name as 'Srinu'.
+
+Update Employee SET EmpName = 'SrinuNp' Where EmpName = 'Srinu';
+commit;
+
+Note :-
+*****
+If we don't use Condition within the Update Statement then all records will be updated.
+
+
+Ex :-
+*****
+=> Increse all the Employees Salary by 5000
+
+Update Employee  SET  EmpSal = EmpSal + 5000 ;
+commit;
+
+=> Update Name as 'Ramu' and  Decrese Salary by 15000 For EmpID 1256.
+
+Update Employee SET EmpName = 'Ramu' , EmpSal = EmpSal - 15000 Where EmpNo = 1256;
+commit;
+
+
+Deleting Data :-
+*************
+
+Syntax :-
+*******
+Delete From <TABLE_NAME> Where <CONDITION> ;
+
+Delete Employees Data Whose Salary is greter than 30000;
+
+Delete From Employee Where EmpSal > 30000;
+commit;
+
+
+Note :- 
+******
+If we don't apply condition all the data will be deleted.
+
+We can Get the deleted data using 'rollback' Command.
+
+The 'rollback' command returns the data which was modified after the last commit;
+
+
+Ex :-
+****
+SQL> Delete From Employee;
+
+12 rows deleted.
+
+SQL> Select * From Employee;
+
+no rows selected
+
+SQL> rollback;
+
+Rollback complete.
+
+Insert following data:-
+
+	  Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1242 ,'SrinuNp',10000.56)  ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1254 ,'Tirumal',13000.25)  ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1201 ,'Venkatesh',8000)    ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1260 ,'Bhavya',10000)      ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1205 ,'Srikanth',11000)    ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1206 ,'Srinath',20000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1207 ,'Sridhar',13000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1208 ,'SrinuNp',14000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1210 ,'Mahesh',20000)      ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1212 ,'Arup',16000)        ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1213 ,'Aravind',10000)     ;
+	  commit;
+
+SQL> Select * From Employee;
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1242 SrinuNp           10000.56
+      1254 Tirumal           13000.25
+      1201 Venkatesh             8000
+      1260 Bhavya               10000
+      1205 Srikanth             11000
+      1206 Srinath              20000
+      1207 Sridhar              13000
+      1208 SrinuNp              14000
+      1210 Mahesh               20000
+      1212 Arup                 16000
+      1213 Aravind              10000
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1261 AbhiSriDharan        20000
+
+12 rows selected.
+
+**********************************************
+
+There are Two Types of Queries 
+
+
+Non - Select Queries : Insert , Update , Delete . All These Queries should be run within the Transaction.
+********************
+The Transaction Management can be done using 'commit' and 'rollback' commands.
+
+
+Select Queries : Select  . All The Select Queries can run without Transactional Context.
+**************
