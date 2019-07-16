@@ -21,6 +21,9 @@ Ex for Realtional Databases are Oracle,MySql etc..
 
 			Understanding Oracle Database :-	
 			*****************************
+Download Oracle Express Edition From :
+
+https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html
 
 
 => Install Oracle Express Edition. 
