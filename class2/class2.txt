@@ -1,0 +1,349 @@
+Update a Data :-
+*************
+Syntax :- 
+*******
+
+Update <TABLE_NAME> SET  COLUMN_NAME1 = COLUMN_NAME1_DATA ,COLUMN_NAME2 = COLUMN_NAME2_DATA  Where <Condition>
+
+=> Update Employees Salarys to 5000 who were having salary as null
+
+
+Update Employee  SET  EmpSal = 5000  Where EmpSal Is Null;
+commit;
+
+=> Update Employees Name AS 'SrinuNp' For Employees having Name as 'Srinu'.
+
+Update Employee SET EmpName = 'SrinuNp' Where EmpName = 'Srinu';
+commit;
+
+Note :-
+*****
+If we don't use Condition within the Update Statement then all records will be updated.
+
+
+Ex :-
+*****
+=> Increse all the Employees Salary by 5000
+
+Update Employee  SET  EmpSal = EmpSal + 5000 ;
+commit;
+
+=> Update Name as 'Ramu' and  Decrese Salary by 15000 For EmpID 1256.
+
+Update Employee SET EmpName = 'Ramu' , EmpSal = EmpSal - 15000 Where EmpNo = 1256;
+commit;
+
+
+Deleting Data :-
+*************
+
+Syntax :-
+*******
+Delete From <TABLE_NAME> Where <CONDITION> ;
+
+Delete Employees Data Whose Salary is greter than 30000;
+
+Delete From Employee Where EmpSal > 30000;
+commit;
+
+
+Note :- 
+******
+If we don't apply condition all the data will be deleted.
+
+We can Get the deleted data using 'rollback' Command.
+
+The 'rollback' command returns the data which was modified after the last commit;
+
+
+Ex :-
+****
+SQL> Delete From Employee;
+
+12 rows deleted.
+
+SQL> Select * From Employee;
+
+no rows selected
+
+SQL> rollback;
+
+Rollback complete.
+
+Insert following data:-
+
+	  Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1242 ,'SrinuNp',10000.56)  ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1254 ,'Tirumal',13000.25)  ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1201 ,'Venkatesh',8000)    ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1260 ,'Bhavya',10000)      ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1205 ,'Srikanth',11000)    ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1206 ,'Srinath',20000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1207 ,'Sridhar',13000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1208 ,'SrinuNp',14000)     ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1210 ,'Mahesh',20000)      ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1212 ,'Arup',16000)        ;
+      Insert Into Employee(EmpNo,EmpName,EmpSal)	Values(1213 ,'Aravind',10000)     ;
+	  commit;
+
+SQL> Select * From Employee;
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1242 SrinuNp           10000.56
+      1254 Tirumal           13000.25
+      1201 Venkatesh             8000
+      1260 Bhavya               10000
+      1205 Srikanth             11000
+      1206 Srinath              20000
+      1207 Sridhar              13000
+      1208 SrinuNp              14000
+      1210 Mahesh               20000
+      1212 Arup                 16000
+      1213 Aravind              10000
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1261 AbhiSriDharan        20000
+
+12 rows selected.
+
+**********************************************
+
+There are Two Types of Queries 
+
+
+Non - Select Queries : Insert , Update , Delete . All These Queries should be run within the Transaction.
+********************
+The Transaction Management can be done using 'commit' and 'rollback' commands.
+
+
+Select Queries : Select  . All The Select Queries can run without Transactional Context.
+**************
+
+**************************************************************************************************************************
+
+Selection Operations  :-
+********************
+
+using 'in' operator :-
+*******************
+
+The 'in' operator can get the information about specified data.
+
+SQL> Select * From Employee Where EmpNo In (1242,1201,1254);
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1242 SrinuNp           10000.56
+      1254 Tirumal           13000.25
+      1201 Venkatesh             8000
+
+
+SQL> Select * From Employee Where EmpName In ('SrinuNp','Mahesh','Arup');
+
+     EMPNO EMPNAME             EMPSAL
+---------- --------------- ----------
+      1242 SrinuNp           10000.56
+      1208 SrinuNp              14000
+      1210 Mahesh               20000
+      1212 Arup                 16000
+
+
+
+Working with Group Functions :-
+****************************
+
+A Group Function can do operations on single column data. 
+
+We can not apply Group Function more than one column.
+
+
+Sum(Column_NAME) :- Returns the Sum of Column Data.
+
+
+
+SQL> Select Sum(EmpSal) From Employee;
+
+SUM(EMPSAL)
+-----------
+  165000.81
+
+Avg(Column_Name) 
+
+SQL> Select AVG(EmpSal) From Employee;
+
+AVG(EMPSAL)
+-----------
+ 13750.0675
+
+
+Max(Column_Name)
+
+
+SQL> Select MAX(EmpSal) From Employee;
+
+MAX(EMPSAL)
+-----------
+      20000
+
+
+Min(Column_Name)
+
+
+SQL> Select Min(EmpSal) From Employee;
+
+MIN(EMPSAL)
+-----------
+       8000
+
+
+Count(Column_Name) :- Returns No Of EmpNo's
+
+
+SQL> Select Count(EmpNo) From Employee;
+
+COUNT(EMPNO)
+------------
+          12
+
+Count(Distinct Column_Name) :- Returns Unique column data count
+
+
+SQL> Select Count(EmpName) From Employee;
+
+COUNT(EMPNAME)
+--------------
+            12
+
+SQL> Select Count(DISTINCT EmpName) From Employee;
+
+COUNT(DISTINCTEMPNAME)
+----------------------
+                    11
+
+***************************************
+Test Data Set up :-
+
+Create Table Product(ProductID number(10),ProductName Varchar2(15),Price number(10,2),Company Varchar2(15));
+
+Insert Into Product(ProductID,ProductName,Price,Company) Values (111,'LenovoK5',12000,'Lenovo');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (222,'LenovoVibe',8000,'Lenovo');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (333,'LenovoA+',7000,'Lenovo');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (444,'LenovoNote',15000,'Lenovo'); 
+
+Insert Into Product(ProductID,ProductName,Price,Company) Values (555,'SamsungNote',18000,'Samsung');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (666,'SamsungEdge',20000,'Samsung');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (777,'Samsungs1',6000,'Samsung');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (888,'SamsungBasic',2000,'Samsung'); 
+
+Insert Into Product(ProductID,ProductName,Price,Company) Values (999,'Apple5s',20000,'Apple');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (001,'Apple6s',35000,'Apple');
+Insert Into Product(ProductID,ProductName,Price,Company) Values (002,'Apple7s',70000,'Apple');
+
+
+commit;
+
+
+SQL> DESC Product;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ---------------------
+
+ PRODUCTID                                          NUMBER(10)
+ PRODUCTNAME                                        VARCHAR2(15)
+ PRICE                                              NUMBER(10,2)
+ COMPANY                                            VARCHAR2(15)
+
+SQL> Select * From Product;
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       111 LenovoK5             12000 Lenovo
+       222 LenovoVibe            8000 Lenovo
+       333 LenovoA+              7000 Lenovo
+       444 LenovoNote           15000 Lenovo
+
+       555 SamsungNote          18000 Samsung
+       666 SamsungEdge          20000 Samsung
+       777 Samsungs1             6000 Samsung
+       888 SamsungBasic          2000 Samsung
+
+       999 Apple5s              20000 Apple
+         1 Apple6s              35000 Apple
+         2 Apple7s              70000 Apple
+
+11 rows selected.
+
+
+Understanding Group By  Cluase  :-
+	      ********
+
+Group By  cluase can be used to do operation on Group Of  Homogeneous data.
+
+The Group By Must be last in Sql Query.
+
+How many column we are projecting with the Query those many columns should mentioned with in the Group By Cluase.
+
+Select Product Counts Based on Company :
+
+SQL>  Select Company , Count(ProductId) PCount  From Product Group By Company ;
+
+COMPANY             PCOUNT
+--------------- ----------
+Samsung                  4
+Lenovo                   4
+Apple                    3
+
+
+=> Select Max Price to with respect to the Brand
+
+SQL> Select Company,Max(Price) From Product Group By Company;
+
+COMPANY         MAX(PRICE)
+--------------- ----------
+Samsung              20000
+Lenovo               15000
+Apple                70000
+
+
+=> Select Min Price to with respect to the Brand
+
+SQL> Select Company,Min(Price) MinPrice From Product Group By Company;
+
+
+COMPANY           MINPRICE
+--------------- ----------
+Samsung               2000
+Lenovo                7000
+Apple                20000
+
+Having cluase :-
+******
+=> Having Cluase can be used to apply the condition result which is return by Group By Cluase.
+=> Having Cluase can not used without Group By Cluase.
+
+Get Companies whose max price is greater than 16000.
+
+SQL> Select Max(Price) MaxPrice , Company From Product Group By Company Having Max(Price) > 16000;
+
+  MAXPRICE COMPANY
+---------- ---------------
+     20000 Samsung
+     70000 Apple
+
+Get Companies whose min price is greater than 6000.
+
+SQL> Select Min(Price) MinPrice , Company From Product Group By Company Having Min(Price) > 6000;
+
+  MINPRICE COMPANY
+---------- ---------------
+      7000 Lenovo
+     20000 Apple
+
+SQL> Select Count(ProductId) NoOfModels , Company From Product Group By Company Having count(ProductId) > 3;
+
+NOOFMODELS COMPANY
+---------- ---------------
+         4 Samsung
+         4 Lenovo
+
+
