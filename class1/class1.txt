@@ -23,7 +23,7 @@ Ex for Realtional Databases are Oracle,MySql etc..
 			*****************************
 Download Oracle Express Edition From :
 
-https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html
+https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/xe-prior-releases-5172097.html
 
 
 => Install Oracle Express Edition. 
