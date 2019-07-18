@@ -1,0 +1,177 @@
+Having cluase :-
+******
+=> Having Cluase can be used to apply the condition result which is return by Group By Cluase.
+=> Having Cluase can not used without Group By Cluase.
+
+Get Companies whose max price is greater than 16000.
+
+SQL> Select Max(Price) MaxPrice , Company From Product Group By Company Having Max(Price) > 16000;
+
+  MAXPRICE COMPANY
+---------- ---------------
+     20000 Samsung
+     70000 Apple
+
+Get Companies whose min price is greater than 6000.
+
+SQL> Select Min(Price) MinPrice , Company From Product Group By Company Having Min(Price) > 6000;
+
+  MINPRICE COMPANY
+---------- ---------------
+      7000 Lenovo
+     20000 Apple
+
+SQL> Select Count(ProductId) NoOfModels , Company From Product Group By Company Having count(ProductId) > 3;
+
+NOOFMODELS COMPANY
+---------- ---------------
+         4 Samsung
+         4 Lenovo
+
+Sub Queries :-
+***********
+ Writing the Query within the Query can be called as Sub Query.
+ Always SubQueries can be written in Where Cluase.
+
+=> Gets the Prduct data which is having Highest Price ?
+
+SQL> Select * From Product Where Price = ( Select Max(Price) From Product ) ;
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+         2 Apple7s              70000 Apple
+
+
+=> Gets the Prduct data which is having Lowest Price ?
+
+SQL> Select * From Product Where Price = ( Select Min(Price) From Product ) ;
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       888 SamsungBasic          2000 Samsung
+
+
+=> Get all the models of Company. Which is having Maximum Price.
+
+SQL> Select * From Product p1 Where p1.Company = ( Select p2.Company From Produc
+t p2 Where p2.Price = ( Select Max(Price) From Product ) );
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       999 Apple5s              20000 Apple
+         1 Apple6s              35000 Apple
+         2 Apple7s              70000 Apple
+
+=> Get all the models of a Company. Which is having Lowest Price.
+
+SQL> Select * From Product p1 Where p1.Company = ( Select p2.Company From Product p2 Where p2.Price = ( Select Min(Price) From Product ) );
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       555 SamsungNote          18000 Samsung
+       666 SamsungEdge          20000 Samsung
+       777 Samsungs1             6000 Samsung
+       888 SamsungBasic          2000 Samsung
+
+********************************************************
+
+ToUpperCase(ColumnName) :- Converts all the values into upper case
+
+ToLowerCase(ColumnName) :- Converts all the values into Lower case
+
+These functions can be used only for display purpose or for runtime validations. Actual data can never be changed.
+
+
+SQL> Select DISTINCT Upper(Company) From Product;
+
+UPPER(COMPANY)
+---------------
+LENOVO
+APPLE
+SAMSUNG
+
+SQL> Select DISTINCT Lower(Company) From Product;
+
+LOWER(COMPANY)
+---------------
+lenovo
+samsung
+apple
+
+
+SQL> Select DISTINCT Company From Product;
+
+COMPANY
+---------------
+Samsung
+Lenovo
+Apple
+
+Usage Of Lower() and Upper() functions :-
+**************************************
+This Lower() and Upper() functions in oracle can be used to operations on data dynamically.
+Becuase The data which is presented in the table is case sensitive. When user is searching for the data from table we should not expect same type of charecters from user.
+
+
+SQL> Select * From Product Where ProductName Like '%lenovo%';
+
+no rows selected
+
+SQL> Select * From Product Where ProductName Like '%LeNovo%';
+
+no rows selected
+
+
+
+
+SQL> Select * From Product Where Upper(ProductName) Like Upper('%LeNovo%');
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       111 LenovoK5             12000 Lenovo
+       222 LenovoVibe            8000 Lenovo
+       333 LenovoA+              7000 Lenovo
+       444 LenovoNote           15000 Lenovo
+
+SQL> Select * From Product Where Lower(ProductName) Like Lower('%LeNovo%');
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       111 LenovoK5             12000 Lenovo
+       222 LenovoVibe            8000 Lenovo
+       333 LenovoA+              7000 Lenovo
+       444 LenovoNote           15000 Lenovo
+
+
+Get the max Product Details :
+
+SQL> Select * From Product P Where P.Price = ( Select Max(P2.Price) From Product P2) ;
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+         2 Apple7s              70000 Apple
+
+
+Get all the models of a Product which is having Maximum Price.
+
+SQL> Select * From Product P1  Where P1.Company = (Select P2.Company From Product P2 Where P2.Price =(Select Max(P3.Price) From Product P3 ) );
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       999 Apple5s              20000 Apple
+         1 Apple6s              35000 Apple
+         2 Apple7s              70000 Apple
+
+
+Get all the products information whose having Minimum price
+
+SQL> Select * From Product P1  Where P1.Company = (Select P2.Company From Product P2 Where P2.Price =(Select Min(P3.Price) From Product P3 ) );
+
+ PRODUCTID PRODUCTNAME          PRICE COMPANY
+---------- --------------- ---------- ---------------
+       555 SamsungNote          18000 Samsung
+       666 SamsungEdge          20000 Samsung
+       777 Samsungs1             6000 Samsung
+       888 SamsungBasic          2000 Samsung
+ 
+**********************************
