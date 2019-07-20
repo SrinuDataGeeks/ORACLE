@@ -1,0 +1,678 @@
+
+SQL> Create Table TestNotNull(Id number(10) , Name Varchar2(10));
+
+Table created.
+
+SQL> DESC TestNotNull;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                               VARCHAR2(10)
+
+SQL> Insert into TestNotNull(Id,Name) values(1,null);
+
+1 row created.
+
+SQL> Insert into TestNotNull(Id,Name) values(2,'Srinu');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * From TestNotNull;
+
+        ID NAME
+---------- ----------
+         1
+         2 Srinu
+
+SQL> Select * From TestNotNull where name = null;
+
+no rows selected
+
+SQL> Select * From TestNotNull where name is null;
+
+        ID NAME
+---------- ----------
+         1
+
+SQL> Select * From TestNotNull where name is not null;
+
+        ID NAME
+---------- ----------
+         2 Srinu
+
+SQL> update TestNotNull  Set Name = 'Kiran' where Name is Null;
+
+1 row updated.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestNotNull;
+
+        ID NAME
+---------- ----------
+         1 Kiran
+         2 Srinu
+
+SQL> Drop Table TestNotNull;
+
+Table dropped.
+
+SQL> Create Table TestNotNull(Id number(10) , Name Varchar2(10) Not Null);
+
+Table created.
+
+SQL> DESC TestNotNull;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Insert into TestNotNull(Id,Name) values(1,null);
+Insert into TestNotNull(Id,Name) values(1,null)
+                                          *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."TESTNOTNULL"."NAME")
+
+
+SQL> Select Global_Name From dual;
+Select Global_Name From dual
+       *
+ERROR at line 1:
+ORA-00904: "GLOBAL_NAME": invalid identifier
+
+
+SQL> Select Global From dual;
+Select Global From dual
+       *
+ERROR at line 1:
+ORA-00904: "GLOBAL": invalid identifier
+
+
+SQL> Select * From Global_Name;
+
+GLOBAL_NAME
+--------------------------------------------------------------------------------
+XE
+
+SQL> Select * From Schema_Name;
+Select * From Schema_Name
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> Insert into TestNotNull(Id,Name) values(1,'Arup');
+
+1 row created.
+
+SQL> Insert into TestNotNull(Id,Name) values(2,'Arup');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestNotNull;
+
+        ID NAME
+---------- ----------
+         1 Arup
+         2 Arup
+
+SQL> DESC TestNotNull;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Alter Table TestNotNull
+  2  Modify Name varchar2(10) Constriant NameNotNull Not Null;
+Modify Name varchar2(10) Constriant NameNotNull Not Null
+                         *
+ERROR at line 2:
+ORA-01735: invalid ALTER TABLE option
+
+
+SQL> Alter Table TestNotNull
+  2  Modify Name varchar2(10);
+
+Table altered.
+
+SQL> Drop Table TestNotNull;
+
+Table dropped.
+
+SQL> Create Table TestNotNull(Id number(10) , Name Varchar2(10) Constraint NameShouldNotNull Not Null);
+
+Table created.
+
+SQL> DESC TestNotNull;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Insert into TestNotNull(Id,Name) values(2,'Arup');
+
+1 row created.
+
+SQL> Insert into TestNotNull(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestNotNull;
+
+        ID NAME
+---------- ----------
+         2 Arup
+         3 Arup
+
+SQL> Create Table TestUnique(Id number(10) , Name Varchar2(10) Constraint NameShouldNotNull Not Null);
+Create Table TestUnique(Id number(10) , Name Varchar2(10) Constraint NameShouldNotNull Not Null)
+                                                                     *
+ERROR at line 1:
+ORA-02264: name already used by an existing constraint
+
+
+SQL> Create Table TestUnique(Id number(10) , Name Varchar2(10)  Not Null);
+
+Table created.
+
+SQL> Insert into TestNotNull(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> Insert into TestNotNull(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> Insert into TestNotNull(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestUnique;
+
+no rows selected
+
+SQL> Insert into TestUnique(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> Insert into TestUnique(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> Insert into TestUnique(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestUnique;
+
+        ID NAME
+---------- ----------
+         3 Arup
+         3 Arup
+         3 Arup
+
+SQL> drop table TestUnique;
+
+Table dropped.
+
+SQL> Create Table TestUnique(Id number(10) Unique, Name Varchar2(10)  Not Null);
+
+Table created.
+
+SQL> DESC TestUnique;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Insert into TestUnique(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> Insert into TestUnique(Id,Name) values(3,'Arup');
+Insert into TestUnique(Id,Name) values(3,'Arup')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C007006) violated
+
+
+SQL> Insert into TestUnique(Id,Name) values(4,'Arup');
+
+1 row created.
+
+SQL> Insert into TestUnique(Id,Name) values(4,'Arup');
+Insert into TestUnique(Id,Name) values(4,'Arup')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C007006) violated
+
+
+SQL> Insert into TestUnique(Id,Name) values(null,'Arup');
+
+1 row created.
+
+SQL> Insert into TestUnique(Id,Name) values(null,'Arup');
+
+1 row created.
+
+SQL> Select * From TestUnique;
+
+        ID NAME
+---------- ----------
+         3 Arup
+         4 Arup
+           Arup
+           Arup
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Create Table TestPrimaryKey(Id number(10) Primary Key, Name Varchar2(10)  Not Null);
+
+Table created.
+
+SQL> Insert into TestPrimaryKey(Id,Name) values(3,'Arup');
+
+1 row created.
+
+SQL> DESC TestPrimaryKey;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                        NOT NULL NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Select * From TestPrimaryKey;
+
+        ID NAME
+---------- ----------
+         3 Arup
+
+SQL> Insert into TestPrimaryKey(Id,Name) values(3,'Arup');
+Insert into TestPrimaryKey(Id,Name) values(3,'Arup')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C007008) violated
+
+
+SQL> Insert into TestPrimaryKey(Id,Name) values(4,'Arup');
+
+1 row created.
+
+SQL> Insert into TestPrimaryKey(Id,Name) values(null,'Arup');
+Insert into TestPrimaryKey(Id,Name) values(null,'Arup')
+                                           *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."TESTPRIMARYKEY"."ID")
+
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From TestPrimaryKey;
+
+        ID NAME
+---------- ----------
+         3 Arup
+         4 Arup
+
+SQL> Create Table AccountHolder(AccNo number(10) Primary Key, AccName varchar2(10) Not Null,
+  2  Balace number(10,2));
+
+Table created.
+
+SQL> DESC AccountHolder;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ACCNO                                     NOT NULL NUMBER(10)
+ ACCNAME                                   NOT NULL VARCHAR2(10)
+ BALACE                                             NUMBER(10,2)
+
+SQL> Drop Table AccountHolder;
+
+Table dropped.
+
+SQL> Create Table AccountHolder(AccNo number(10) Primary Key, AccName varchar2(10) Not Null,
+  2  Balance number(10,2));
+
+Table created.
+
+SQL> DESC AccountHolder;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ACCNO                                     NOT NULL NUMBER(10)
+ ACCNAME                                   NOT NULL VARCHAR2(10)
+ BALANCE                                            NUMBER(10,2)
+
+SQL> Insert Into AccountHolder(AccNo,AccName,Balance) Values(111,'Srinu',250);
+
+1 row created.
+
+SQL> Insert Into AccountHolder(AccNo,AccName,Balance) Values(122,'Naresh',-300);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From AccountHolder;
+
+     ACCNO ACCNAME       BALANCE
+---------- ---------- ----------
+       111 Srinu             250
+       122 Naresh           -300
+
+SQL> update AccountHolder set balance = balance - 500 where AccNo = 111;
+
+1 row updated.
+
+SQL> Select * From AccountHolder;
+
+     ACCNO ACCNAME       BALANCE
+---------- ---------- ----------
+       111 Srinu            -250
+       122 Naresh           -300
+
+SQL> Drop Table AccountHolder;
+
+Table dropped.
+
+SQL> Create Table AccountHolder(AccNo number(10) Primary Key, AccName varchar2(10) Not Null,
+  2  Balance number(10,2) check(Balance >= 0) );
+
+Table created.
+
+SQL> Insert Into AccountHolder(AccNo,AccName,Balance) Values(111,'Srinu',250);
+
+1 row created.
+
+SQL> Insert Into AccountHolder(AccNo,AccName,Balance) Values(122,'Naresh',-300);
+Insert Into AccountHolder(AccNo,AccName,Balance) Values(122,'Naresh',-300)
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C007014) violated
+
+
+SQL> Select * From AccountHolder;
+
+     ACCNO ACCNAME       BALANCE
+---------- ---------- ----------
+       111 Srinu             250
+
+SQL> update AccountHolder set balance = balance - 500 where AccNo = 111;
+update AccountHolder set balance = balance - 500 where AccNo = 111
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C007014) violated
+
+
+SQL> update AccountHolder set balance = balance - 250 where AccNo = 111;
+
+1 row updated.
+
+SQL> Select * From AccountHolder;
+
+     ACCNO ACCNAME       BALANCE
+---------- ---------- ----------
+       111 Srinu               0
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Drop Table Employee;
+
+Table dropped.
+
+SQL> Drop Table Department;
+Drop Table Department
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> Create Table Department(ID number(10) Primary Key , Name Varchar2(10) Not Null);
+
+Table created.
+
+SQL> Insert Into Department(ID,Name) Values(1,'Java');
+
+1 row created.
+
+SQL> Insert Into Department(ID,Name) Values(2,'PHP');
+
+1 row created.
+
+SQL> Insert Into Department(ID,Name) Values(3,'BigData');
+
+1 row created.
+
+SQL> Insert Into Department(ID,Name) Values(4,'DataScience');
+Insert Into Department(ID,Name) Values(4,'DataScience')
+                                         *
+ERROR at line 1:
+ORA-12899: value too large for column "SYSTEM"."DEPARTMENT"."NAME" (actual: 11,
+maximum: 10)
+
+
+SQL> Insert Into Department(ID,Name) Values(4,'DataSci');
+
+1 row created.
+
+SQL> commitl
+SP2-0042: unknown command "commitl" - rest of line ignored.
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From Department;
+
+        ID NAME
+---------- ----------
+         1 Java
+         2 PHP
+         3 BigData
+         4 DataSci
+
+SQL> DESC Department;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                        NOT NULL NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Create Table Employee(ID number(10) Primary Key,Name Varchar2(15) Not Null,
+  2  DEPT_FK_ID number(10) references Department(ID));
+
+Table created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(1,'Srinu',1);
+
+1 row created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(2,'Kiran',1);
+
+1 row created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(3,'Arup',1);
+
+1 row created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(4,'Sateesh',3);
+
+1 row created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(5,'Naresh',3);
+
+1 row created.
+
+SQL> Insert Into Employee(ID,Name,DEPT_FK_ID) Values(6,'Venkatesh',2);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From Department;
+
+        ID NAME
+---------- ----------
+         1 Java
+         2 PHP
+         3 BigData
+         4 DataSci
+
+SQL> Select * From Employee;
+
+        ID NAME            DEPT_FK_ID
+---------- --------------- ----------
+         1 Srinu                    1
+         2 Kiran                    1
+         3 Arup                     1
+         4 Sateesh                  3
+         5 Naresh                   3
+         6 Venkatesh                2
+
+6 rows selected.
+
+SQL> Create Table ConstraintUnique(ID number(10) , Name Varchar2(10) Not Null,
+  2  Constraint IDNotNull Unique(ID));
+
+Table created.
+
+SQL> DESC ConstraintUnique;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(10)
+ NAME                                      NOT NULL VARCHAR2(10)
+
+SQL> Insert Into ConstraintUnique(ID,Name) Values(1,'Srinu');
+
+1 row created.
+
+SQL> Insert Into ConstraintUnique(ID,Name) Values(1,'Srinu');
+Insert Into ConstraintUnique(ID,Name) Values(1,'Srinu')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.IDNOTNULL) violated
+
+
+SQL> Create Table ConstraintPrimaryKey(ID number(10) , Name Varchar2(10) Not Null,
+  2  Constraint PrimeryID Primary Key(ID));
+
+Table created.
+
+SQL> Create Table ConstraintForiegnKey(ID number(10) , Name Varchar2(10) Not Null,
+  2  Dept_FK_ID number(10),
+  3  Constraint DeptForeignKey references Department(ID));
+Constraint DeptForeignKey references Department(ID))
+                                               *
+ERROR at line 3:
+ORA-00907: missing right parenthesis
+
+
+SQL> Create Table ConstraintForiegnKey(ID number(10) , Name Varchar2(10) Not Null,
+  2  Dept_FK_ID number(10),
+  3  Constraint DeptForeignKey references Department(ID));
+Constraint DeptForeignKey references Department(ID))
+                                               *
+ERROR at line 3:
+ORA-00907: missing right parenthesis
+
+
+SQL> Create Table ConstraintForiegnKey(ID number(10) , Name Varchar2(10) Not Null,
+  2  Dept_FK_ID number(10) references Department(ID));
+
+Table created.
+
+SQL> Create Table ConstraintCheck(ID number(10) , Name Varchar2(10) Not Null,
+  2  Constraint IDGeaterZero Check(ID > 0 ));
+
+Table created.
+
+SQL> Insert Into ConstraintCheck(ID,Name) Values(1,'Kiran');
+
+1 row created.
+
+SQL> Insert Into ConstraintCheck(ID,Name) Values(0,'Kiran');
+Insert Into ConstraintCheck(ID,Name) Values(0,'Kiran')
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.IDGEATERZERO) violated
+
+
+SQL> Insert Into ConstraintCheck(ID,Name) Values(-1,'Kiran');
+Insert Into ConstraintCheck(ID,Name) Values(-1,'Kiran')
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.IDGEATERZERO) violated
+
+
+SQL> Insert Into ConstraintCheck(ID,Name) Values(11,'Kiran');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From ConstraintCheck;
+
+        ID NAME
+---------- ----------
+         1 Kiran
+        11 Kiran
+
+SQL>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

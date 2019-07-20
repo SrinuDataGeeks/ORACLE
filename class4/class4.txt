@@ -1,0 +1,357 @@
+Unstanding Constraints :-
+**********************
+Constraints are the rules which we defined on the column .
+
+We will apply constrains at the time table creation itself.
+
+Syntax :-
+1. Constraints can applied on Column Level
+
+2. Constraints can applied on Table Level
+	
+Table level is allways recomended.
+
+
+
+Column_Level Syntax :- Constraint NameOfConstraintForColumn <ConstraintName>
+
+	Ex : ID number(10) Constraint IDDontNull NOT NULL
+
+			OR
+		At column level we can eliminate Constraint Name :
+	
+	      ID number(10) Not Null
+
+NOT NULL :-
+********
+	If we apply Not Not NULL Constraint user should enter data.
+
+	** We can not apply Not Null Constraint on Table Level.
+
+
+Column Level :-
+
+1. Create Table Sample(Id number(10) NOT NULL, Name Varchar2(15) NOT NULL);
+
+	Drop Table Sample1 ;
+ // Delete the Sample1 table if it exist
+
+
+	OR
+
+2. Create Table Sample(Id number(10) Constraint IDDontNull NOT NULL, Name Varchar2(15) Constraint NameDontNull NOT NULL);
+
+	
+SQL> Create Table Sample(Id number(10) Constraint IDDontNull NOT NULL, Name Varchar2(15) Constraint NameDontNull NOT NULL);
+
+Table created.
+
+SQL> Insert Into Sample(ID,Name) Values(null,'Srinu');
+Insert Into Sample(ID,Name) Values(null,'Srinu')
+                                   *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."SAMPLE"."ID")
+
+
+SQL> Insert Into Sample(ID,Name) Values(12,null);
+Insert Into Sample(ID,Name) Values(12,null)
+                                      *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."SAMPLE"."NAME")
+
+
+SQL> Insert Into Sample(ID,Name) Values(13,'Venu');
+
+1 row created.
+
+SQL> Insert Into Sample(ID,Name) Values(13,'Venu');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From Sample;
+
+        ID NAME
+---------- ---------------
+        13 Venu
+        13 Venu	
+
+
+SQL> Drop Table Sample;
+
+Table dropped.
+
+SQL> Select * From Sample;
+Select * From Sample
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+Drop Command  :-
+****
+The "Drop" command deletes the table from the database. 
+
+Syntax :-
+
+Drop Table <Table_Name> ;
+
+=> Drop Table Sample;
+
+
+Syta
+
+
+2. UNIQUE :-
+   ******
+=> If we apply UNIQUE Constraint , then the column does not allow duplicate values.
+=> The UNIQUE Constraint allows nullable values. Because null is a undefined data . The System can not compare null values.
+=> So that For the UNIQUE constraint we should also apply NOT NULL Constraint.
+
+
+Column Level Syntaxes :-
+
+Create Table Sample(ID Number(10)  UNIQUE, Name Varchar2(15));
+
+OR
+
+Create Table Sample(ID Number(10)  Constraint IDUnique  UNIQUE, Name Varchar2(15));
+
+OR
+
+Table Level Syntaxes :-
+
+
+Create Table Sample(ID Number(10) , Name Varchar2(15),Constraint IDUnique  UNIQUE(ID)); 
+
+
+
+SQL> Insert into Sample(ID,Name) Values(1242,'Venu');
+
+1 row created.
+
+
+SQL> Insert into Sample(ID,Name) Values(1242,'Srinu');
+Insert into Sample(ID,Name) Values(1242,'Srinu')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.IDUNIQUE) violated
+
+
+=> But the UNIQUE Constraint allows nullable values.
+
+
+
+SQL> Insert into Sample(ID,Name) Values(null,'Srinu');
+
+1 row created.
+
+SQL> Insert into Sample(ID,Name) Values(null,'Srinu');
+
+1 row created.
+
+SQL> Insert into Sample(ID,Name) Values(null,'Srinu');
+
+1 row created.
+
+SQL> Select * From SAmple;
+
+        ID NAME
+---------- ---------------
+      1242 Venu
+           Srinu
+           Srinu
+           Srinu
+
+
+=> To Avoid this we shoul applay  NOT NULL Contraint to the column.
+
+
+Drop Table Sample;
+
+Create Table Sample(ID Number(10) NOT NULL , Name Varchar2(15),Constraint IDUnique  UNIQUE(ID)); 
+
+SQL> Insert into Sample(ID,Name) Values(1242,'Venu');
+
+1 row created.
+
+SQL> Insert into Sample(ID,Name) Values(1242,'Srinu');
+Insert into Sample(ID,Name) Values(1242,'Srinu')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.IDUNIQUE) violated
+
+
+SQL> Insert into Sample(ID,Name) Values(null,'Srinu');
+Insert into Sample(ID,Name) Values(null,'Srinu')
+                                   *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."SAMPLE"."ID")
+
+
+SQL> Insert into Sample(ID,Name) Values(1250,'Srinu');
+
+1 row created.
+
+SQL> Select * From Sample;
+
+        ID NAME
+---------- ---------------
+      1242 Venu
+      1250 Srinu
+
+3. CHECK Constraint :-
+   ****************
+
+=> CHECK Constraint  can be used to apply the condition on the data.
+=> For ex Amount should be >= 0 etc..
+=> CHECK Constraint does not validates null values.
+=> CHECK Constraint can be applied only on Column Level.
+
+Ex :-
+***
+
+Drop Table Sample;
+
+Create Table Sample(ID number(10) NOT NULL,Name Varchar2(10) NOT NULL,Amount Number(10,2) CHECK(Amount >= 0),Constraint IDUnique UNIQUE(ID));
+
+
+SQL> Insert Into Sample(ID,Name,Amount) Values(1242,'Srinu',5000);
+
+1 row created.
+
+SQL> Insert Into Sample(ID,Name,Amount) Values(1241,'Srinu',null);
+
+1 row created.
+
+SQL> Insert Into Sample(ID,Name,Amount) Values(1241,'Srinu',-120);
+Insert Into Sample(ID,Name,Amount) Values(1241,'Srinu',-120)
+*
+ERROR at line 1:
+ORA-02290: check constraint (SYSTEM.SYS_C004047) violated
+
+
+SQL> Insert Into Sample(ID,Name,Amount) Values(1244,'Srinu',0);
+
+1 row created.
+
+SQL> Select * From Sample;
+
+        ID NAME           AMOUNT
+---------- ---------- ----------
+      1242 Srinu            5000
+      1241 Srinu
+      1244 Srinu               0
+
+
+4. Primary Key :-
+   ***********
+=> The Primary Key Constraint does not allows nullable and duplicate values.
+=> The Primary Key Constraint can be applied either on the table level or on the column level.
+
+=> According Normalization rules Every record of a table should be differentiated with one unique identifier.
+=> So that within the table we should have at least one column as a 'Primary Key'.
+
+  
+Ex :-
+****
+
+Drop Table Sample;
+
+Create Table Sample(ID Number(10) , Name Varchar2(15),Constraint PrimaryID  Primary Key(ID)); 
+
+SQL> Insert Into Sample(ID,Name) Values(1244,'Srinu');
+
+1 row created.
+
+SQL> Insert Into Sample(ID,Name) Values(1244,'Venu');
+Insert Into Sample(ID,Name) Values(1244,'Venu')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.IDUNIQUE) violated
+
+
+SQL> Insert Into Sample(ID,Name) Values(null,'Venu');
+Insert Into Sample(ID,Name) Values(null,'Venu')
+                                   *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."SAMPLE"."ID")
+
+
+SQL> Select * From Sample;
+
+        ID NAME
+---------- ---------------
+      1244 Srinu
+
+SQL> Insert Into Sample(ID,Name) Values(1234,'Venu');
+
+1 row created.
+
+SQL> Select * From Sample;
+
+        ID NAME
+---------- ---------------
+      1244 Srinu
+      1234 Venu
+
+
+
+5. Foreign Key :-
+   ***********
+
+=> Foreign Key can be used to make a relationship with other tables.
+=> Foreign Key can always be depending on Primary Key.
+=> Without Primary Key the Foreign Key does not exist.
+=> The Foreign Key can be applied only on Column Level.
+=> Foreign Key Will allways represents Many(*). Foreign Key can be repeated more than once.
+
+=> We can use 'references' keyword to create a Foreign Key.
+=> The Foreign Key can allo nullable values.
+=> If we don't want to allow nullable values we should apply NOT NULL Constraint
+
+
+Refer Emp-Dept Diagrame :-
+***********************
+
+Drop Table Department;
+
+Create Table Department(DeptID Number(10) , DeptName Varchar2(15) NOT NULL, Location Varchar2(20) NOT NULL,Constraint PKDeptID Primary Key(DeptID));
+
+Insert into Department(DeptID,DeptName,Location) Values(1,'Java','INDIA');
+Insert into Department(DeptID,DeptName,Location) Values(2,'.NET','US');
+Insert into Department(DeptID,DeptName,Location) Values(3,'Accounting','CANADA');
+
+Drop Table Employee;
+
+Create Table  Employee(EmpID Number(10),EmpName Varchar2(20), EmpSal Number(10,2) CHECK(EmpSal >= 0),Dept_FK_ID number(10) references Department(DeptID),Constraint PKEmpID Primary Key(EmpID));
+
+Insert Into Employee(EmpID,EmpName,EmpSal,Dept_FK_ID) Values(1242,'Srinu',5000,1);
+Insert Into Employee(EmpID,EmpName,EmpSal,Dept_FK_ID) Values(1254,'Tirumal',15000,1);
+Insert Into Employee(EmpID,EmpName,EmpSal,Dept_FK_ID) Values(1260,'Mahesh',30000,1);
+Insert Into Employee(EmpID,EmpName,EmpSal,Dept_FK_ID) Values(1261,'Naresh',15000,2);
+Insert Into Employee(EmpID,EmpName,EmpSal,Dept_FK_ID) Values(1258,'Arup',50000,3);
+
+commit;
+
+
+
+SQL> Select * From Department;
+
+    DEPTID DEPTNAME        LOCATION
+---------- --------------- --------------------
+         1 Java            INDIA
+         2 .NET            US
+         3 Accounting      CANADA
+
+SQL> Select * From Employee;
+
+     EMPID EMPNAME                  EMPSAL DEPT_FK_ID
+---------- -------------------- ---------- ----------
+      1242 Srinu                      5000          1
+      1254 Tirumal                   15000          1
+      1260 Mahesh                    30000          1
+      1261 Naresh                    15000          2
+      1258 Arup                      50000          3
