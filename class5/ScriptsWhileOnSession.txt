@@ -1,0 +1,231 @@
+
+
+SQL> Select * From Department;
+
+        ID NAME
+---------- ----------
+         1 Java
+         2 PHP
+         3 BigData
+         4 DataSci
+
+SQL> Select * From Employee;
+
+        ID NAME            DEPT_FK_ID
+---------- --------------- ----------
+         1 Srinu                    1
+         2 Kiran                    1
+         3 Arup                     1
+         4 Sateesh                  3
+         5 Naresh                   3
+         6 Venkatesh                2
+
+6 rows selected.
+
+SQL> Insert into Employee(ID,Name) values(7,'Akash');
+
+1 row created.
+
+SQL> Insert into Employee(ID,Name) values(8,'Sai');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From Employee;
+
+        ID NAME            DEPT_FK_ID
+---------- --------------- ----------
+         1 Srinu                    1
+         2 Kiran                    1
+         3 Arup                     1
+         4 Sateesh                  3
+         5 Naresh                   3
+         6 Venkatesh                2
+         7 Akash
+         8 Sai
+
+8 rows selected.
+
+SQL> Select * From Department;
+
+        ID NAME
+---------- ----------
+         1 Java
+         2 PHP
+         3 BigData
+         4 DataSci
+
+Inner Join :-
+*********
+	Returns Employee Info with Department Name (Apply Inner Join)
+
+
+SQL> select emp.ID , emp.Name , dept.Name From Employee emp
+  2  Inner Join
+  3  Department dept ON(emp.Dept_FK_ID = dept.ID);
+
+        ID NAME            NAME
+---------- --------------- ----------
+         1 Srinu           Java
+         2 Kiran           Java
+         3 Arup            Java
+         4 Sateesh         BigData
+         5 Naresh          BigData
+         6 Venkatesh       PHP
+
+6 rows selected.
+
+SQL> select emp.ID , emp.Name , dept.Name From Employee emp
+  2  , Department dept Where dept.ID = emp.Dept_Fk_ID;
+
+        ID NAME            NAME
+---------- --------------- ----------
+         1 Srinu           Java
+         2 Kiran           Java
+         3 Arup            Java
+         4 Sateesh         BigData
+         5 Naresh          BigData
+         6 Venkatesh       PHP
+
+6 rows selected.
+
+	Left Outer Join :-
+	****************
+		Get all the Employees info with Department Name , If Employee does not belongs to Department print empty.
+
+
+SQL> select emp.ID , emp.Name , dept.Name From Employee emp
+  2  Left Outer Join
+  3  Department dept ON(emp.Dept_Fk_ID = dept.ID);
+
+        ID NAME            NAME
+---------- --------------- ----------
+         3 Arup            Java
+         2 Kiran           Java
+         1 Srinu           Java
+         6 Venkatesh       PHP
+         5 Naresh          BigData
+         4 Sateesh         BigData
+         8 Sai
+         7 Akash
+
+8 rows selected.
+
+	Right Outer Join :-
+	****************
+		Get all the Departments info with Employee Date , If Department does not have Employees print empty.
+
+SQL> select emp.ID , emp.Name , dept.Name From Employee emp
+  2  Right Outer Join
+  3  Department dept ON(emp.Dept_Fk_ID = dept.ID);
+
+        ID NAME            NAME
+---------- --------------- ----------
+         1 Srinu           Java
+         2 Kiran           Java
+         3 Arup            Java
+         4 Sateesh         BigData
+         5 Naresh          BigData
+         6 Venkatesh       PHP
+                           DataSci
+
+7 rows selected.
+	
+	Full Outer Join:
+	***************
+		Get All the Department Names, Employees Info and also Intersection Data.
+		
+SQL> select emp.ID , emp.Name , dept.Name From Employee emp
+  2  Full Outer Join
+  3  Department dept ON(emp.Dept_Fk_ID = dept.ID);
+
+        ID NAME            NAME
+---------- --------------- ----------
+         1 Srinu           Java
+         2 Kiran           Java
+         3 Arup            Java
+         4 Sateesh         BigData
+         5 Naresh          BigData
+         6 Venkatesh       PHP
+         7 Akash
+         8 Sai
+                           DataSci
+
+9 rows selected.
+
+********************************
+
+Working with self Joins 
+
+SQL> Create Table EmpSelfJoin(ID Number(10) Primary Key,
+  2  Name Varchar2(10) Not Null,
+  3  MGRID number(10) references EmpSelfJoin(ID),
+  4  Sal number(10,2) Check(Sal >= 10000));
+
+Table created.
+
+	=> Diplay Employee Names whose Matching Manger Name.
+
+
+SQL> Select emp.Name EmpName , mgr.Name MgrName
+  2  From EmpSelfJoin emp
+  3  Inner Join
+  4  EmpSelfJoin mgr ON(emp.MGRID = mgr.ID);
+
+EMPNAME    MGRNAME
+---------- ----------
+Srinu      Sai
+Akash      Srinu
+Kiran      Srinu
+Venkat     Kiran
+
+=> Diplay Employee Names whose Matching Manger Name If the Employee does not reports to manager display empty.
+
+SQL> Select emp.Name EmpName , mgr.Name MgrName
+  2  From EmpSelfJoin emp
+  3  Left Outer Join
+  4  EmpSelfJoin mgr ON(emp.MGRID = mgr.ID);
+
+EMPNAME    MGRNAME
+---------- ----------
+Srinu      Sai
+Akash      Srinu
+Kiran      Srinu
+Venkat     Kiran
+Sai
+
+
+Display Employee Data which is not reporting to any manager :
+
+SQL> Select emp.Name , emp.Id From EmpSelfJoin emp where emp.MGRID is Null;
+
+NAME               ID
+---------- ----------
+Sai              1201
+
+=> Get the Data where the Employee Salary is Greater than Manager Sal
+
+SQL> Select emp.Name EmpName , mgr.Name MgrName ,emp.Sal EmpSal , mgr.Sal MgrSal
+  2  From EmpSelfJoin emp
+  3  Inner Join
+  4  EmpSelfJoin mgr ON(emp.MGRID = mgr.ID AND emp.sal > mgr.sal);
+
+EMPNAME    MGRNAME        EMPSAL     MGRSAL
+---------- ---------- ---------- ----------
+Akash      Srinu           30000      15000
+Kiran      Srinu           25000      15000
+Venkat     Kiran           28000      25000
+
+
+Display Only Managers Data :
+
+SQL> Select ID,Name,Sal From EmpSelfJoin Where Id  In ( Select Distinct MgrId From EmpSelfJoin);
+
+        ID NAME              SAL
+---------- ---------- ----------
+      1201 Sai             35000
+      1242 Srinu           15000
+      1254 Kiran           25000

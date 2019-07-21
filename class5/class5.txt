@@ -1,0 +1,431 @@
+Understanding Joins :-
+*******************
+=> Using Joins we can get information from different tables.
+
+There are four types of Joins.
+
+	1. Inner Joins (A ^ B)
+
+	2. Left Outer Joins ( A - B = A + A^B)
+
+	3. Right Outer Joins ( B - A =  B + A^B)
+
+	4. Full Joins ( A-B U B-A = A+B+A^B)
+
+
+=> Inner Joins :-
+   ***********
+The Inner Joins can be used to get the  common data from both tables.
+In Simple Inner Join is an interception of Both the tables.
+
+The Inner Join can applied by equating the Primary and Foreign Key values.
+
+
+=> Select Employees information belongs to department.
+
+
+
+SQL> Select emp.EmpName , dept.DeptName  From Employee emp , Department dept Where emp.Dept_FK_ID = dept.DeptID;
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Srinu                Java
+Tirumal              Java
+Mahesh               Java
+Naresh               .NET
+Arup                 Accounting
+
+
+=> Get the Employee Information along with Department whose is having Maximum salary
+
+SQL> Select emp.EmpId, emp.EmpName , emp.EmpSal , dept.DeptName From Employee emp , Department dept Where emp.Dept_FK_ID=dept.DeptId and emp.EmpSal = (Select Max(empSal) From Employee);
+
+     EMPID EMPNAME                  EMPSAL DEPTNAME
+---------- -------------------- ---------- ---------------
+      1258 Arup                      50000 Accounting
+
+
+=> Display the Number Of Employees Along with Department Name
+
+SQL> Select dept.DeptName , count(emp.EmpId) From Employee emp , Department dept  Where emp.Dept_Fk_Id = dept.DeptId 
+Group By dept.DeptName;
+
+DEPTNAME        COUNT(EMP.EMPID)
+--------------- ----------------
+.NET                           1
+Accounting                     1
+Java                           3
+
+
+=> Gets the Java Employees Data along with Department Location 
+
+SQL > Select emp.EmpId, emp.EmpName , emp.EmpSal , dept.DeptName , dept.Location From Employee emp , Department dept Where emp.Dept_FK_ID=dept.DeptId and dept.DeptName = 'Java';
+
+     EMPID EMPNAME                  EMPSAL DEPTNAME        LOCATION
+---------- -------------------- ---------- --------------- --------------------
+      1242 Srinu                      5000 Java            INDIA
+      1254 Tirumal                   15000 Java            INDIA
+      1260 Mahesh                    30000 Java            INDIA
+
+=> Get the Employee Information along with Department whose is having Minsalary
+
+SQL> Select emp.EmpId, emp.EmpName , emp.EmpSal , dept.DeptName From Employee emp , Department dept Where emp.Dept_FK_ID=dept.DeptId and emp.EmpSal = (Select Min(empSal) From Employee);
+
+     EMPID EMPNAME                  EMPSAL DEPTNAME
+---------- -------------------- ---------- ---------------
+      1242 Srinu                      5000 Java
+
+
+
+
+=> Get the Employee Information along with Department whose name is ending with 'esh'.
+
+
+SQL> Select emp.EmpId, emp.EmpName , emp.EmpSal , dept.DeptName From Employee emp , Department dept Where emp.Dept_FK_ID=dept.DeptId and emp.EmpName like '%esh%';
+
+
+     EMPID EMPNAME                  EMPSAL DEPTNAME
+---------- -------------------- ---------- ---------------
+      1260 Mahesh                    30000 Java
+      1261 Naresh                    15000 .NET
+
+=> Get the Maximum sal of Every Department 
+
+SQL> Select dept.DeptName , max(emp.EmpSal) From Employee emp , Department dept  Where emp.Dept_Fk_Id = dept.DeptId 
+	Group By dept.DeptName;
+
+DEPTNAME        MAX(EMP.EMPSAL)
+--------------- ---------------
+.NET                      15000
+Accounting                50000
+Java                      30000
+
+
+=> Display Department Information who were having more than 2 employees
+
+SQL> Select dept.DeptName , count(emp.EmpId) From Employee emp , Department dept  Where emp.Dept_Fk_Id = dept.DeptId 
+Group By dept.DeptName Having count(emp.EmpId) > 2;
+
+************************
+Insert Employee Record with null id !!!
+
+Insert into Employee values(1212,'Ganesh',50000,null);
+	commit;
+
+=> Gets the Employee Data who does not belongs to a Department.
+
+SQL> Select *  From Employee emp  Where emp.Dept_FK_ID Is NULL;
+
+     EMPID EMPNAME                  EMPSAL DEPT_FK_ID
+---------- -------------------- ---------- ----------
+     1212 Ganesh                    50000
+
+
+Insert the following Sample Data :-
+*********************************
+
+SQL> insert into Department(DeptId,DeptName,Location) Values(4,'PHP','AUS');
+
+1 row created.
+
+SQL> insert into Department(DeptId,DeptName,Location) Values(5,'Hadoop','IR');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> insert into Employee(EmpID,EmpName,EmpSal) Values(1201,'Akash',40000);
+
+1 row created.
+
+SQL> insert into Employee(EmpID,EmpName,EmpSal) Values(1202,'Venu',50000);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+
+SQL> Select * From Employee;
+
+     EMPID EMPNAME                  EMPSAL DEPT_FK_ID
+---------- -------------------- ---------- ----------
+      1242 Srinu                      5000          1
+      1254 Tirumal                   15000          1
+      1260 Mahesh                    30000          1
+      1261 Naresh                    15000          2
+      1258 Arup                      50000          3
+     12254 Ganesh                    50000
+      1201 Akash                     40000
+      1202 Venu                      50000
+
+8 rows selected.
+
+SQL> Select * From Department;
+
+    DEPTID DEPTNAME        LOCATION
+---------- --------------- --------------------
+         1 Java            INDIA
+         2 .NET            US
+         3 Accounting      CANADA
+         4 PHP             AUS
+         5 Hadoop          IR
+
+*****************************************
+
+Inner Join  Syntax
+
+Select Column1,Column2 From Table1 Inner Join Table2 ON (Condition);
+
+1. Gets the Employees information who belongs to the Department :
+
+
+SQL > Select emp.EmpName,dept.DeptName From Employee emp Inner Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId);
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Srinu                Java
+Tirumal              Java
+Mahesh               Java
+Naresh               .NET
+Arup                 Accounting
+
+
+2. Get the Employees Information along with the Department whose name contains 'sh'.
+
+SQL > Select emp.EmpName,dept.DeptName From Employee emp Inner Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId and emp.EmpName like '%sh%');
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Mahesh               Java
+Naresh               .NET
+
+		(OR)
+
+SQL > Select emp.EmpName,dept.DeptName From Employee emp Inner Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId) Where emp.EmpName like '%sh%';
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Mahesh               Java
+Naresh               .NET
+
+
+
+
+
+
+Left Join  :- (A-B = A^B + A)
+***************
+
+3. Gets the Department Names along with the Employee Count :
+
+SQL > Select dept.DeptName , Count(emp.EmpId) EmpCount From Department dept Left Join Employee emp ON (emp.Dept_Fk_Id = dept.DeptId) Group By dept.DeptName ;
+
+DEPTNAME          EMPCOUNT
+--------------- ----------
+.NET                     1
+Accounting               1
+Hadoop                   0
+PHP                      0
+Java                     3
+
+4. Gets the all Employees information along with Department Name if they has ?
+
+
+SQL > Select emp.EmpName,dept.DeptName From Employee emp Left Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId);
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Srinu                Java
+Tirumal              Java
+Mahesh               Java
+Naresh               .NET
+Arup                 Accounting
+Ganesh
+Akash
+Venu
+
+5. Gets the Employees Data along with Department Name if they has  and whose salary is greater than 8000
+
+SQL > Select emp.EmpName,dept.DeptName ,emp.EmpSal From Employee emp Left Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId) Where emp.EmpSal > 18000;
+
+
+EMPNAME              DEPTNAME            EMPSAL
+-------------------- --------------- ----------
+Mahesh               Java                 30000
+Arup                 Accounting           50000
+Ganesh                                    50000
+Akash                                     40000
+Venu                                      50000
+
+
+6. Gets the Max Salary Employee Data along with Department Information (If they has ?)
+
+Select emp.EmpName,dept.DeptName ,emp.EmpSal From Employee emp Left Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId) Where emp.EmpSal = (Select Max(empSal) From Employee );
+
+EMPNAME              DEPTNAME            EMPSAL
+-------------------- --------------- ----------
+Arup                 Accounting           50000
+Ganesh                                    50000
+Venu                                      50000
+
+
+7. Gets the Max Salary Employee Data along with Department Information and whose dept Name should not be empty
+
+Sol 1 :-
+******
+USE Inner Join 
+
+Select emp.EmpName,dept.DeptName ,emp.EmpSal From Employee emp Inner Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId) Where emp.EmpSal = (Select Max(empSal) From Employee ) ;
+
+
+EMPNAME              DEPTNAME            EMPSAL
+-------------------- --------------- ----------
+Arup                 Accounting           50000
+
+
+
+Right Join : Ex : A Right Join B (B-A = A^B + B)
+************************************************
+
+5. Gets the all Department Information along with Employees Data if the Department Has ?
+
+SQL > Select dept.DeptName , emp.EmpName , emp.empSal From Employee emp Right Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId);
+
+
+DEPTNAME        EMPNAME                  EMPSAL
+--------------- -------------------- ----------
+Java            Srinu                      5000
+Java            Tirumal                   15000
+Java            Mahesh                    30000
+.NET            Naresh                    15000
+Accounting      Arup                      50000
+Hadoop
+PHP
+
+Full Join : ( A Full Join B (A-B U B-A = A^B + A + B) )
+*********************************************************
+
+SQL > Select dept.DeptName , emp.EmpName , emp.empSal From Employee emp Full Join Department dept ON (emp.Dept_Fk_Id = dept.DeptId);
+
+DEPTNAME        EMPNAME                  EMPSAL
+--------------- -------------------- ----------
+Java            Srinu                      5000
+Java            Tirumal                   15000
+Java            Mahesh                    30000
+.NET            Naresh                    15000
+Accounting      Arup                      50000
+                Ganesh                    50000
+                Akash                     40000
+                Venu                      50000
+Hadoop
+PHP
+
+***************************************
+
+Understanding Self joins :-
+*************************
+Self Join is a Concept Of applying a Join to the Same Table.  
+
+Ex:- Consider the Below EmpSelfJoin Table which has the Employees along with Reporting Managers. Here the Manager also an Employee.
+
+
+Drop  Table EmpSelfJoin;
+
+Create Table EmpSelfJoin(EmpId Number(10) Primary Key , EmpName Varchar2(10) , EmpSal Number(10,2) , MgrId number(10) references EmpSelfJoin(EmpId));
+
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1242,'Srinu',4000,null);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1201,'Arup',15000,1242);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1203,'Aravindan',20000,1242);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1205,'Ramu',6000,null);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1206,'Ganesh',12000,1205);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1204,'Kiran',9000,1205);
+Insert Into EmpSelfJoin(EmpId,EmpName,EmpSal,MgrId) Values(1202,'Venu',17000,1206);
+commit;
+
+
+SQL> Select * From EmpSelfJoin;
+
+     EMPID EMPNAME        EMPSAL      MGRID
+---------- ---------- ---------- ----------
+      1242 Srinu            4000
+      1201 Arup            15000       1242
+      1203 Aravindan       20000       1242
+      1205 Ramu             6000
+      1206 Ganesh          12000       1205
+      1204 Kiran            9000       1205
+      1202 Venu            17000       1206
+
+
+1. Gets the Employees the Along with Manager Name :-
+
+Select   emp.EmpId empId  , emp.EmpName , mgr.EmpId MgrId , mgr.EmpName  MgrName From  EmpSelfJoin emp Inner Join EmpSelfJoin mgr ON (mgr.EmpId = emp.MgrId);
+
+  EMPID EMPNAME         MGRID MGRNAME
+------- ---------- ---------- ----------
+   1203 Aravindan        1242 Srinu
+   1201 Arup             1242 Srinu
+   1204 Kiran            1205 Ramu
+   1206 Ganesh           1205 Ramu
+   1202 Venu             1206 Ganesh
+
+2. Gets the Managers information .
+
+
+SQL > Select   Distinct mgr.EmpName  MgrName From  EmpSelfJoin emp Inner Join EmpSelfJoin mgr ON (mgr.EmpId = emp.MgrId);
+
+
+MGRNAME
+----------
+Srinu
+Ganesh
+Ramu
+
+3. Gets the Employees Data who deos not have reporting managers.
+
+SQL > Select emp.EmpName From EmpSelfJoin emp Where emp.MGRID IS NULL;
+
+EMPNAME
+----------
+Srinu
+Ramu
+
+4. Gets the Managers Data  and his reporting Employees Count 
+
+SQL > Select    mgr.EmpName  MgrName  , Count(emp.EmpId) EmpCount From  EmpSelfJoin emp Inner Join EmpSelfJoin mgr ON (mgr.EmpId = emp.MgrId) Group By mgr.EmpName;
+
+
+MGRNAME      EMPCOUNT
+---------- ----------
+Srinu               2
+Ganesh              1
+Ramu                2
+
+5. Gets the Managers Data Who were having more than one Reporting Employees
+
+Select    mgr.EmpName  MgrName  , Count(emp.EmpId) EmpCount From  EmpSelfJoin emp Inner Join EmpSelfJoin mgr ON (mgr.EmpId = emp.MgrId) Group By mgr.EmpName Having Count(emp.EmpId) > 1;
+
+
+MGRNAME      EMPCOUNT
+---------- ----------
+Srinu               2
+Ramu                2
+
+
+6. Get all the Employees Data and show the Managers if they Have :-
+
+Select   emp.EmpId empId  , emp.EmpName , mgr.EmpId MgrId , mgr.EmpName  MgrName From  EmpSelfJoin emp Left Join EmpSelfJoin mgr ON (mgr.EmpId = emp.MgrId);
+
+
+  EMPID EMPNAME         MGRID MGRNAME
+------- ---------- ---------- ----------
+   1203 Aravindan        1242 Srinu
+   1201 Arup             1242 Srinu
+   1204 Kiran            1205 Ramu
+   1206 Ganesh           1205 Ramu
+   1202 Venu             1206 Ganesh
+   1205 Ramu
+   1242 Srinu
