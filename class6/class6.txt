@@ -1,0 +1,591 @@
+
+Composite Primary Key :-
+*********************
+=> Composite Primary Key is a concept of applying primary key constraint on more than one column.
+=> Here the Combination of Column Values Should not be repeated.
+=> The Composite Primary Key can be applied only on Table Level.
+
+
+Create Table Country(CountryName Varchar2(15),StateName Varchar2(15),City Varchar2(15), Constraint Name_PK Primary Key(CountryName , StateName) );
+
+SQL> Select * From Country;
+
+no rows selected
+
+SQL> Insert Into Country(CountryName,StateName,City) Values('India','TG','HYD');
+
+
+1 row created.
+
+SQL> Insert Into Country(CountryName,StateName,City) Values('India','AP','VJY');
+
+
+1 row created.
+
+SQL> Insert Into Country(CountryName,StateName,City) Values('India','TG','Delhi');
+
+
+Insert Into Country(CountryName,StateName,City) Values('India','TG','Delhi')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.NAME_PK) violated
+
+
+SQL> Insert Into Country(CountryName,StateName,City) Values('India','MP','Delhi');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> Select * From Country;
+
+COUNTRYNAME     STATENAME       CITY
+--------------- --------------- ---------------
+India           TG              HYD
+India           AP              VJY
+India           MP              Delhi
+
+
+Similarly we Composite UniQue Key  ***
+
+***************************************
+
+Understanding Database Views :-
+****************************
+=> View is nothing but virtual table which can be build up on the base tables.
+=> In Simple View is just like a data Structure.
+
+
+Syntax :-
+******
+Create Or Replace View <View_Name> AS SQL Query
+
+Ex:-
+
+SQL> Create Or Replace View EmpView As Select * From Employee Where Dept_Fk_ID Is Not Null;
+
+	View created.
+
+
+Now we can use this View to performation opertations .
+
+SQL > Select * From EmpView;
+
+
+    EMPID EMPNAME                  EMPSAL DEPT_FK_ID
+--------- -------------------- ---------- ----------
+     1242 Srinu                      5000          1
+     1254 Tirumal                   15000          1
+     1260 Mahesh                    30000          1
+     1261 Naresh                    15000          2
+     1258 Arup                      50000          3
+
+
+** How many Columns we are projecting on the View Those many columns can be used for Other Operations.
+
+
+
+SQL> Select Distinct Dept_Fk_ID From EmpView;
+
+DEPT_FK_ID
+----------
+         1
+         2
+         3
+
+We can also apply Join Condition on View .
+
+SQL > Select emp.EmpName,dept.DeptName From EmpView emp Inner Join Department dept ON ( emp.Dept_Fk_ID = dept.DeptId);
+
+
+EMPNAME              DEPTNAME
+-------------------- ---------------
+Srinu                Java
+Tirumal              Java
+Mahesh               Java
+Naresh               .NET
+Arup                 Accounting
+
+We can drop the view using  following SQL command :
+Drop View <View_Name>
+
+Ex: Drop View EmpInfo;
+
+Understanding Sequences :-
+***********************
+Sequences Can be used in Oracle to generate the Primary Key Id values dynamically. 
+
+Bydefault the Sequence value will be started with one and incremented by specified value within the Sequence. 
+
+
+Syntax to create a Sequence :-
+
+Sequence <Sequence_Name> Increment By <Number>;
+
+EX :- 
+
+SQL> Create Sequence BrandIdSeq Increment By 3;
+
+Sequence created.
+
+SQL> Select BrandIdSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+         1
+
+SQL> Select BrandIdSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+         4
+
+SQL> Select BrandIdSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+         7
+
+SQL> Select BrandIdSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+        10
+
+SQL> Select BrandIdSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+        13
+
+*********************
+Drop Table Brand;
+
+Create Table Brand(BrandID number(10) Primary Key ,BrandName Varchar2(10) , Price number(10));
+
+insert into Brand(BrandId,BrandName,Price) Values(BrandIdSeq.NextVal,'Lenovo',5000);
+insert into Brand(BrandId,BrandName,Price) Values(BrandIdSeq.NextVal,'Samsung',25000);
+insert into Brand(BrandId,BrandName,Price) Values(BrandIdSeq.NextVal,'Apple',35000);
+
+commit;
+
+SQL> Select * From Brand;
+
+   BRANDID BRANDNAME       PRICE
+---------- ---------- ----------
+        16 Lenovo           5000
+        19 Samsung         25000
+        22 Apple           35000
+
+**********************************************
+
+Within the Sequence we can also use some standard predefined keywords.
+
+Start With <Number> : Then Sequence Will Start with Specified Number
+
+MAXVALUE   <Number> : indicates Maximum Number of a sequence.
+
+MINVALUE   <Number> : indicates Minimum Number of a sequence.
+      
+NOCACHE  : Don't maintains sequence number in Cache (Temporary memory Area)
+
+NOCYCLE : Sequence Number Won't be repeated.
+
+
+CREATE SEQUENCE TestSeq
+      INCREMENT BY 1
+      START WITH 50000
+      MAXVALUE   99999
+      MINVALUE   0
+      NOCACHE
+      NOCYCLE;
+
+SQL> Select TestSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+     50000
+
+SQL> Select TestSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+     50001
+
+SQL> Select TestSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+     50002
+
+SQL> Select TestSeq.NextVal From Dual;
+
+   NEXTVAL
+----------
+     50003
+
+**************************************************************
+
+Understanding RowNumbers :-
+************************
+
+=> Oracle internally maintains a RowNum for every record.
+
+=> RowNum will be generated by the Oracle based on result data.
+
+=> The RowNum is not a static number.
+
+
+Ex :-
+***
+
+SQL> Select RowNum,EmpId,EmpName From Employee;
+
+    ROWNUM      EMPID EMPNAME
+---------- ---------- --------------------
+         1       1242 Srinu
+         2       1254 Tirumal
+         3       1260 Mahesh
+         4       1261 Naresh
+         5       1258 Arup
+         6      12254 Ganesh
+         7       1201 Akash
+         8       1202 Venu
+
+8 rows selected.
+
+SQL> Select RowNum,EmpId,EmpName From Employee Where EmpName like '%esh%';
+
+    ROWNUM      EMPID EMPNAME
+---------- ---------- --------------------
+         1       1260 Mahesh
+         2       1261 Naresh
+         3      12254 Ganesh
+
+SQL> Select RowNum,EmpId,EmpName From Employee;
+
+    ROWNUM      EMPID EMPNAME
+---------- ---------- --------------------
+         1       1242 Srinu
+         2       1254 Tirumal
+         3       1260 Mahesh
+         4       1261 Naresh
+         5       1258 Arup
+         6      12254 Ganesh
+         7       1201 Akash
+         8       1202 Venu
+
+8 rows selected.
+
+SQL> Select RowNum,EmpId,EmpName From Employee Where RowNum <= 5;
+
+    ROWNUM      EMPID EMPNAME
+---------- ---------- --------------------
+         1       1242 Srinu
+         2       1254 Tirumal
+         3       1260 Mahesh
+         4       1261 Naresh
+         5       1258 Arup
+
+
+Understanding Date Functions in Oracle :-
+**************************************
+
+'SysDate' returns current System Date :
+
+
+SQL> Select SysDate From Dual;
+
+SYSDATE
+---------
+19-JAN-17
+
+
+
+SQL> select Extract(day from sysdate)  Day From Dual;
+
+       DAY
+----------
+        19
+
+SQL> select Extract(Month from sysdate)  Month From Dual;
+
+     MONTH
+----------
+         1
+
+SQL> select Extract(Year from sysdate)  Year From Dual
+  2  ;
+
+      YEAR
+----------
+      2017
+
+
+To_Char() Functions returns charecter oriented Data :-
+********
+
+SQL> select To_Char(sysdate,'day')  Day From Dual;
+
+DAY
+---------
+thursday
+
+SQL> select To_Char(sysdate,'month')  month From Dual;
+
+MONTH
+---------
+january
+
+SQL> select To_Char(sysdate,'year') year From Dual;
+
+YEAR
+------------------------------------------
+twenty seventeen
+
+
+SQL> Select Add_Months(Sysdate,1) From Dual;
+
+ADD_MONTH
+---------
+19-FEB-17
+
+SQL> Select Add_Months(Sysdate,2) From Dual;
+
+ADD_MONTH
+---------
+19-MAR-17
+
+
+SQL> Select Months_Between('19-MAR-17',Sysdate) NoOfMonths  From Dual;
+
+NoOfMonths 
+-----------------------------------
+                                  2
+
+SQL> Select Last_Day(SysDate) LastDay  From Dual;
+
+LASTDAY
+---------
+31-JAN-17
+
+
+SQL> Select Last_Day(SysDate) - SysDate  DaysLeft  From Dual;
+
+  DAYSLEFT
+----------
+        12
+
+SQL> Select Next_Day(SysDate,'MonDay') LastDay  From Dual;
+
+LASTDAY
+---------
+23-JAN-17
+
+
+To_Date() :-
+*********
+Converts the Charectercted Oriented Data into Date Format.
+
+SQL> Select To_Date('17-MAR-17') DateInfo From Dual;
+
+DATEINFO
+---------
+17-MAR-17
+
+***********************************************
+
+Working with Multiple Tables using Joins : -
+****************************************
+
+Structure :-
+*********
+
+TestDept
+
+DeptId(PK) DeptName 
+
+
+
+TestEmp
+
+EmpId(PK)  EmpName  EmpSal  MgrID(SelfFK)  DeptId(FK)
+
+
+
+
+TestLoc
+
+LocId (PK)  LocName  DeptId(FK)
+
+********************************
+Drop Table TestEmp;
+Drop Table TestLoc;
+Drop Table TestDept;
+
+Create Table TestDept(DeptId Number(10) Primary Key , DeptName Varchar(15));
+
+Insert Into TestDept Values(1,'Java');
+Insert Into TestDept Values(2,'PHP');
+Insert Into TestDept Values(3,'C++');
+Insert Into TestDept Values(4,'C');
+
+
+
+Create Table TestEmp(EmpId Number(10) Primary Key,EmpName Varchar2(15),EmpSal number(10,2),MgrId number(10) references TestEmp(EmpId),DeptId references TestDept(DeptId));
+
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1242,'Srinu',5000,null,1);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1254,'Mahes',8000,null,2);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1201,'Ganesh',15000,1254,2);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1202,'Venu',5000,1254,2);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1203,'Naresh',5000,1254,2);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1204,'Akash',5000,1242,1);
+Insert Into TestEmp(EmpId,EmpName,EmpSal,MgrId,DeptId) Values(1205,'Arup',5000,1242,1);
+
+
+
+
+
+Create Table TestLoc(LocId Number(10) Primary Key,LocName Varchar2(15),DeptId references TestDept(DeptId));
+
+Insert Into TestLoc(LocId,LocName,DeptId) Values(1001,'HYD',1);
+Insert Into TestLoc(LocId,LocName,DeptId) Values(1002,'Delhi',2);
+Insert Into TestLoc(LocId,LocName,DeptId) Values(1003,'USA',3);
+Insert Into TestLoc(LocId,LocName,DeptId) Values(1004,'CANADA',4);
+
+commit;
+
+*************************************************
+
+
+SQL> Select * From TestDept;
+
+    DEPTID DEPTNAME
+---------- ---------------
+         1 Java
+         2 PHP
+         3 C++
+         4 C
+
+SQL> Select * From TestEmp;
+
+     EMPID EMPNAME             EMPSAL      MGRID     DEPTID
+---------- --------------- ---------- ---------- ----------
+      1242 Srinu                 5000                     1
+      1254 Mahes                 8000                     2
+      1201 Ganesh               15000       1254          2
+      1202 Venu                  5000       1254          2
+      1203 Naresh                5000       1254          2
+      1204 Akash                 5000       1242          1
+      1205 Arup                  5000       1242          1
+
+7 rows selected.
+
+SQL> Select * From TestLoc;
+
+     LOCID LOCNAME             DEPTID
+---------- --------------- ----------
+      1001 HYD                      1
+      1002 Delhi                    2
+      1003 USA                      3
+      1004 CANADA                   4
+
+
+
+=> Gets the EmpName,DeptName,DeptLocation (Inner Join)
+
+
+Select emp.EmpName , dept.DeptName , loc.LocName From  TestEmp emp Inner Join TestDept dept ON (emp.deptId = dept.deptId) Inner Join TestLoc loc ON (loc.DeptId = dept.DeptId);
+
+EMPNAME         DEPTNAME        LOCNAME
+--------------- --------------- ---------------
+Srinu           Java            HYD
+Mahes           PHP             Delhi
+Ganesh          PHP             Delhi
+Venu            PHP             Delhi
+Naresh          PHP             Delhi
+Akash           Java            HYD
+Arup            Java            HYD
+
+7 rows selected.
+
+
+
+=> Gets the Deprtment Name and Location Name and Employees Count (Left Join)
+
+
+Select dept.DeptName , loc.LocName , Count(emp.EmpId) EmpCount From  TestDept dept Left Join TestEmp emp ON (emp.deptId = dept.deptId) Inner Join TestLoc loc ON (loc.DeptId = dept.DeptId) Group By dept.DeptName , loc.LocName;
+
+DEPTNAME        LOCNAME           EMPCOUNT
+--------------- --------------- ----------
+PHP             Delhi                    4
+C               CANADA                   0
+Java            HYD                      3
+C++             USA                      0
+
+
+=> Gets the Deprtment Name and Location Name and Employees Count (Right Join)
+
+Select dept.DeptName , loc.LocName , Count(emp.EmpId) EmpCount From  TestEmp emp Right Join TestDept dept ON (emp.deptId = dept.deptId) Inner Join TestLoc loc ON (loc.DeptId = dept.DeptId) Group By dept.DeptName , loc.LocName;
+
+DEPTNAME        LOCNAME           EMPCOUNT
+--------------- --------------- ----------
+PHP             Delhi                    4
+C               CANADA                   0
+Java            HYD                      3
+C++             USA                      0
+
+
+=> Gets the EmpName,MgrName,DeptName,DeptLocation (SelfJoin , Inner Join)
+
+
+Select emp.EmpId ,emp.EmpName , mgr.EmpName mgrname ,dept.DeptName , loc.LocName From TestEmp emp Inner Join TestEmp mgr ON (emp.MgrId = mgr.EmpId ) Inner Join TestDept dept ON(dept.DeptId = emp.DeptId) Inner Join TestLoc loc ON(dept.DeptId=loc.DeptId) Order By emp.EmpId ASC;
+
+
+     EMPID EMPNAME         MGRNAME         DEPTNAME        LOCNAME
+---------- --------------- --------------- --------------- ---------------
+      1201 Ganesh          Mahes           PHP             Delhi
+      1202 Venu            Mahes           PHP             Delhi
+      1203 Naresh          Mahes           PHP             Delhi
+      1204 Akash           Srinu           Java            HYD
+      1205 Arup            Srinu           Java            HYD
+
+
+
+=> Gets the EmpName,EmpSal,MgrName,DeptName,DeptLocation Who is having maximum salary (SelfJoin , Inner Join)
+
+
+Select emp.EmpName , emp.EmpSal ,mgr.EmpName mgrname ,dept.DeptName , loc.LocName From TestEmp emp Inner Join TestEmp mgr ON (emp.MgrId = mgr.EmpId ) Inner Join TestDept dept ON(dept.DeptId = emp.DeptId) Inner Join TestLoc loc ON(dept.DeptId=loc.DeptId) Where emp.EmpSal = (Select Max(EmpSal) From TestEmp ) Order By emp.EmpId ASC;
+
+
+EMPNAME             EMPSAL MGRNAME         DEPTNAME        LOCNAME
+--------------- ---------- --------------- --------------- ---------------
+Ganesh               15000 Mahes           PHP             Delhi
+
+
+=> Creating a MaxSalaryEmp View :-
+
+Create Or Replace View MaxSalaryEmp AS
+Select emp.EmpId,emp.EmpName , emp.EmpSal ,mgr.EmpName mgrname ,dept.DeptName , loc.LocName From TestEmp emp Inner Join TestEmp mgr ON (emp.MgrId = mgr.EmpId ) Inner Join TestDept dept ON(dept.DeptId = emp.DeptId) Inner Join TestLoc loc ON(dept.DeptId=loc.DeptId) Where emp.EmpSal = (Select Max(EmpSal) From TestEmp ) Order By emp.EmpId ASC;
+
+
+
+SQL> Select * From MaxSalaryEmp ;
+
+     EMPID EMPNAME             EMPSAL MGRNAME         DEPTNAME 		LOCNAME
+---------- --------------- ---------- --------------- ---------------	------
+
+      1201 Ganesh               15000 Mahes           PHP		Delhi
+
+
+=> Gets the Reporting Manager of Mamimum Salary Employee.
+
+
+SQL> Select MGRName From MaxSalaryEmp;
+
+MGRNAME
+---------------
+Mahes
+
