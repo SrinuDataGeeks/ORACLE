@@ -1,4 +1,3 @@
-
 Composite Primary Key :-
 *********************
 => Composite Primary Key is a concept of applying primary key constraint on more than one column.
